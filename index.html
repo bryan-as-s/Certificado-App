@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generador de Certificados</title>
+    <style>
+        @font-face {
+                font-family: 'texgyretermes';
+                src: url('texgyretermes-bold.otf') format('opentype');
+        }
+
+    	@font-face {
+                font-family: 'Alice';
+           	    src: url('Alice-Regular.ttf') format('truetype'); 
+       	 }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url(https://yt3.googleusercontent.com/oocIKE4jmo-OUnAiopAX3Op5mFuFB6g72betcUdoTE5q9cSliHTAEIfyxHAQ_XEdDeFd2guj=s900-c-k-c0x00ffffff-no-rj);
+            background-size: cover;
+            margin: 100px;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color .3s ease;
+        }
+
+        button:hover {
+            background-color: aqua;
+            border: none;
+        }
+
+	   .certificado-info {
+            font-family: 'Alice', serif; 
+            font-size: 20px; 
+            color: #000000; 
+            text-align: center;
+        }
+
+        #certificateDisplay {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de Certificados</h1>
+    <form id="certificateForm">
+        <label for="nombrePersona">Nombre de la persona:</label>
+        <input type="text" id="nombrePersona" name="nombrePersona" required><br><br>
+
+        <label for="nombreCurso">Nombre del curso:</label>
+        <input type="text" id="nombreCurso" name="nombreCurso" required><br><br>
+
+    	<label for="fechaInicio">Fecha de inicio del curso:</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required><br><br>
+
+        <label for="fechaFinalizacion">Fecha de finalización del curso:</label>
+        <input type="date" id="fechaFinalizacion" name="fechaFinalizacion" required><br><br>
+
+        <label for="duracionCurso">Duración del curso:</label>
+        <input type="text" id="duracionCurso" name="duracionCurso" required><br><br>
+
+        <label for="numeroRegistro">Número de Registro:</label>
+        <input type="text" id="numeroRegistro" name="numeroRegistro" required><br><br>
+
+        <button type="button" id="generarCertificado" style="display: block; margin: 0 auto;">Generar Certificado</button>
+        <button type="button" id="descargarCertificado" style="display: none; margin: 0 auto; margin-top: 10px;">Descargar Certificado</button>
+    </form>
+
+    <div id="certificateDisplay">
+        <img src="https://i.ibb.co/7vNQTkx/CERTIFICADO-DE-CURSOS.png" id="plantillaCertificado" style="display: none;" crossorigin="anonymous">
+    </div>
+
+    <script>
+    // Función para justificar el texto en líneas
+    function getJustifiedLines(context, text, maxWidth, font, lineHeight) {
+        var words = text.split(' ');
+        var lines = [];
+        var currentLine = words[0];
+
+        for (var i = 1; i < words.length; i++) {
+            var word = words[i];
+            var testLine = currentLine + ' ' + word;
+            var testWidth = context.measureText(testLine).width;
+
+            if (testWidth <= maxWidth) {
+                currentLine = testLine;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
+        }
+
+        lines.push(currentLine);
+        return lines;
+    }
+
+    // JavaScript para manejar la generación del certificado
+    document.getElementById("generarCertificado").addEventListener("click", function () {
+        // Capturar los valores ingresados por el usuario
+        var nombrePersona = document.getElementById("nombrePersona").value;
+        var nombreCurso = document.getElementById("nombreCurso").value;
+        var fechaInicio = document.getElementById("fechaInicio").value;
+        var fechaFinalizacion = document.getElementById("fechaFinalizacion").value;
+        var duracionCurso = document.getElementById("duracionCurso").value;
+        var numeroRegistro = document.getElementById("numeroRegistro").value;
+
+        // Obtener la plantilla de certificado
+        var plantillaCertificado = document.getElementById("plantillaCertificado");
+
+        // Crear un lienzo para trabajar con la plantilla
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+
+        // Establecer las dimensiones del lienzo
+        canvas.width = plantillaCertificado.width;
+        canvas.height = plantillaCertificado.height;
+
+        // Dibujar la plantilla en el lienzo
+        context.drawImage(plantillaCertificado, 0, 0);
+
+        // Definir el estilo de texto del nombre
+        context.font = "bold 70px texgyretermes";
+        context.fillStyle = "#00325b"; // Color del texto
+
+        // Calcular el ancho del lienzo
+        var canvasWidth = canvas.width;
+
+        // Calcular el ancho del texto y ajustar las coordenadas x
+        var textWidth = context.measureText(nombrePersona).width;
+        var x1 = (canvasWidth - textWidth) / 2;
+        context.fillText(nombrePersona, x1, 479);
+
+         // Definir el estilo de texto del curso
+        context.font = "bold 68px texgyretermes";
+        context.fillStyle = "#00325b"; // Color del texto
+
+        textWidth = context.measureText(nombreCurso).width;
+        var x2 = (canvasWidth - textWidth) / 2;
+        context.fillText(nombreCurso, x2, 690);
+
+        // Cambio de estilo de fuente para el texto
+        context.font = "30px Alice";
+        context.fillStyle = "#000000"; // Color del texto
+
+        // Sustituir los marcadores de posición con los valores ingresados
+        var textoReemplazo = `REALIZADO DEL "${fechaInicio}" AL "${fechaFinalizacion}" CON UNA DURACIÓN TOTAL DE "${duracionCurso}" HORAS ACADÉMICAS, CUMPLIENDO CON TODOS LOS REQUISITOS ACADÉMICOS EXIGIDOS POR EL RESPECTIVO PROGRAMA ESPECIALIZADO`;
+
+        // Ancho máximo permitido para el texto
+        var maxWidth = canvasWidth - 700; // Ajusta este valor según tus necesidades
+
+        var lines = getJustifiedLines(context, textoReemplazo, maxWidth, context.font, 30);
+
+        var y = 750; // Coordenada y donde comienza el texto
+        for (var i = 0; i < lines.length; i++) {
+            var textWidth = context.measureText(lines[i]).width;
+            var x = (canvasWidth - textWidth) / 2;
+            context.fillText(lines[i], x, y);
+            y += 45; // Espaciado entre líneas
+        }
+
+        // Cambio de estilo de fuente para el código de registro
+        context.font = "25px Alice";
+        context.fillStyle = "#000000"; // Color del texto
+
+        // Coordenadas personalizadas para el número de registro
+        var xNumeroRegistro = 462; // Ajusta la coordenada x según tus necesidades
+        var yNumeroRegistro = 948; // Ajusta la coordenada y según tus necesidades
+        context.fillText(numeroRegistro, xNumeroRegistro, yNumeroRegistro);
+
+        // Mostrar el lienzo en la página o guardar la imagen generada
+        var certificateDisplay = document.getElementById("certificateDisplay");
+        certificateDisplay.appendChild(canvas);
+
+        // Mostrar el botón de descarga
+        document.getElementById("descargarCertificado").style.display = "block";
+
+        // Agregar un evento al botón de descarga
+        document.getElementById("descargarCertificado").addEventListener("click", function () {
+            var link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            link.download = "certificado_personalizado.png"; // Nombre del archivo a descargar
+            link.click();
+        });
+    });
+    </script>
+</body>
+</html>
